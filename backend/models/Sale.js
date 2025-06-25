@@ -10,7 +10,8 @@ const saleSchema = new mongoose.Schema({
     {
       product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
       quantity: Number,
-      price: Number,
+      price: Number, // Selling price
+      costPrice: Number, // Cost price for profit calculation
     },
   ],
   totalAmount: {

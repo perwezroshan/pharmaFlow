@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { authenticateToken } = require('../middleware/auth');
 const {
   createProduct,
   getAllProducts,
@@ -8,6 +9,9 @@ const {
   updateProduct,
   deleteProduct,
 } = require('../controllers/productController');
+
+// All product routes require authentication
+router.use(authenticateToken);
 
 // Create new product
 router.post('/', createProduct);

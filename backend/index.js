@@ -3,17 +3,26 @@ const authRoutes=require('./routes/auth.js');
 const productRoutes=require('./routes/productRoutes.js')
 const salesRoutes=require('./routes/salesRoutes.js')
 const customerRoutes=require('./routes/customerRoutes.js')
+const dashboardRoutes=require('./routes/dashboardRoutes.js')
 const express = require('express');
 const app = express();
 const cors = require('cors');
 
 dotenv.config();
 
-const PORT=process.env.PORT||5000;
-app.use(express.json()); // To parse JSON bodies
+const PORT=process.env.PORT||3000;
+
+// CORS Configuration
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true,
+  optionsSuccessStatus: 200
+};
 
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
+app.use(express.json({ limit: '10mb' })); // To parse JSON bodies
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // connect to DB
 require('./config/database.js').connect();
@@ -21,8 +30,9 @@ require('./config/database.js').connect();
 //mount
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
-app.use('./api/sales',salesRoutes);
-app.use('./api/customerRoutes',customerRoutes)
+app.use('/api/sales', salesRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Root Route
 app.get('/', (req, res) => {

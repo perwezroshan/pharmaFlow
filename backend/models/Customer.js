@@ -10,7 +10,7 @@ const customerSchema = new mongoose.Schema({
   address: String,
   retailerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Retailer',
     required: true, // so each retailer only sees their customers
   },
   createdAt: {

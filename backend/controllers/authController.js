@@ -19,11 +19,19 @@ exports.signup = async (req, res) => {
     const retailer = new Retailer({ shopName, email, password: hashedPassword, otp, otpExpiresAt });
     await retailer.save();
 
-    await sendOTPEmail(email, otp, shopName);
-
-    res.status(201).json({ message: 'Signup successful. Please verify OTP sent to your email.' });
+    try {
+      await sendOTPEmail(email, otp, shopName);
+      res.status(201).json({ message: 'Signup successful. Please verify OTP sent to your email.' });
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      res.status(201).json({
+        message: 'Signup successful. However, email sending failed. Your OTP is: ' + otp,
+        otp: otp // For development only
+      });
+    }
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    console.error('Signup error:', err);
+    res.status(500).json({ error: 'Server error: ' + err.message });
   }
 };
 

@@ -9,10 +9,14 @@ import Register from './components/auth/Register';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LogoutConfirmation from './components/auth/LogoutConfirmation';
 
+// Guest Session Handler
+import GuestSessionHandler from './components/GuestSessionHandler';
+
 // Layout
 import Layout from './components/layout/Layout';
 
 // Page Components (we'll create these next)
+import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
 import AddProduct from './pages/AddProduct';
@@ -23,10 +27,12 @@ import Customers from './pages/Customers';
 function App() {
   return (
     <Provider store={store}>
+      <GuestSessionHandler />
       <Router>
         <div className="App">
           <Routes>
             {/* Public routes */}
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 

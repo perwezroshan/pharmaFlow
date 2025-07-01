@@ -88,3 +88,156 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+// Check Auth
+exports.checkAuth = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ message: 'No token provided' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const retailer = await Retailer.findById(decoded.id);
+
+    if (!retailer) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+
+    // Check if guest session has expired
+    if (retailer.isGuest) {
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+      if (retailer.createdAt < oneHourAgo) {
+        return res.status(401).json({ message: 'Guest session expired' });
+      }
+    }
+
+    res.status(200).json({
+      token,
+      shopName: retailer.shopName,
+      isGuest: retailer.isGuest || false
+    });
+  } catch (err) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+};
+
+// Guest Signup (no email verification)
+const guestSignup = async (req, res) => {
+  try {
+    const { shopName, email, password } = req.body;
+
+    // Check if user already exists
+    const existingRetailer = await Retailer.findOne({ email });
+    if (existingRetailer) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Create retailer with guest flag
+    const retailer = new Retailer({
+      shopName,
+      email,
+      password: hashedPassword,
+      isEmailVerified: true, // Auto-verify for guest accounts
+      isGuest: true, // Mark as guest account
+    });
+
+    await retailer.save();
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: retailer._id, shopName: retailer.shopName, email: retailer.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '10h' }
+    );
+
+    res.status(201).json({
+      message: 'Guest account created successfully',
+      token,
+      shopName: retailer.shopName,
+      isGuest: true,
+    });
+  } catch (error) {
+    console.error('Guest signup error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Guest Cleanup (delete all guest data)
+exports.guestCleanup = async (req, res) => {
+  try {
+    const userId = req.retailer.id;
+    const user = await Retailer.findById(userId);
+
+    if (!user || !user.isGuest) {
+      return res.status(400).json({ message: 'Not a guest account' });
+    }
+
+    // Import models for cleanup (we'll need to create these)
+    const Product = require('../models/Product');
+    const Sale = require('../models/Sale');
+
+    // Delete all data associated with this guest user
+    await Promise.all([
+      Product.deleteMany({ retailer: userId }),
+      Sale.deleteMany({ retailerId: userId }),
+      // Add other models as needed (Customer, etc.)
+    ]);
+
+    // Delete the guest user account
+    await Retailer.findByIdAndDelete(userId);
+
+    res.status(200).json({ message: 'Guest data cleaned up successfully' });
+  } catch (error) {
+    console.error('Guest cleanup error:', error);
+    res.status(500).json({ message: 'Server error during cleanup' });
+  }
+};
+
+// Auto-cleanup expired guest accounts (to be called by a cron job)
+const cleanupExpiredGuests = async () => {
+  try {
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+
+    // Find expired guest accounts
+    const expiredGuests = await Retailer.find({
+      isGuest: true,
+      createdAt: { $lt: oneHourAgo }
+    });
+
+    // Import models for cleanup
+    const Product = require('../models/Product');
+    const Sale = require('../models/Sale');
+
+    for (const guest of expiredGuests) {
+      // Delete all data associated with this guest user
+      await Promise.all([
+        Product.deleteMany({ retailer: guest._id }),
+        Sale.deleteMany({ retailerId: guest._id }),
+        // Add other models as needed (Customer, etc.)
+      ]);
+
+      // Delete the guest user account
+      await Retailer.findByIdAndDelete(guest._id);
+    }
+
+    console.log(`Cleaned up ${expiredGuests.length} expired guest accounts`);
+    return expiredGuests.length;
+  } catch (error) {
+    console.error('Auto-cleanup error:', error);
+    return 0;
+  }
+};
+
+module.exports = {
+  signup: exports.signup,
+  verifyOTP: exports.verifyOTP,
+  login: exports.login,
+  checkAuth: exports.checkAuth,
+  guestSignup,
+  guestCleanup: exports.guestCleanup,
+  cleanupExpiredGuests
+};

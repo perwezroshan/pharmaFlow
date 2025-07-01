@@ -18,6 +18,10 @@ const retailerSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isGuest: {
+    type: Boolean,
+    default: false,
+  },
   otp: String,
   otpExpiresAt: Date,
 }, { timestamps: true });

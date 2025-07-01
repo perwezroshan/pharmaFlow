@@ -13,9 +13,9 @@ const authenticateToken = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // Optionally verify retailer still exists and is verified
+    // Verify retailer still exists and is verified (or is a guest)
     const retailer = await Retailer.findById(decoded.id);
-    if (!retailer || !retailer.isEmailVerified) {
+    if (!retailer || (!retailer.isEmailVerified && !retailer.isGuest)) {
       return res.status(401).json({ message: 'Invalid or expired token' });
     }
 

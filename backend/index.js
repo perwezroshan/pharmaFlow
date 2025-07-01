@@ -4,6 +4,7 @@ const productRoutes=require('./routes/productRoutes.js')
 const salesRoutes=require('./routes/salesRoutes.js')
 const customerRoutes=require('./routes/customerRoutes.js')
 const dashboardRoutes=require('./routes/dashboardRoutes.js')
+const cleanupService = require('./services/cleanupService');
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -26,6 +27,9 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // connect to DB
 require('./config/database.js').connect();
+
+// Start guest cleanup service
+cleanupService.start();
 
 //mount
 app.use('/api/auth', authRoutes);

@@ -123,66 +123,6 @@ A comprehensive web application for managing medicine retail shops with personal
 
 5. Open your browser and navigate to `http://localhost:5173`
 
-## Environment Configuration
-
-### Frontend Environment Variables
-
-The frontend uses Vite's environment variable system. All variables must be prefixed with `VITE_`.
-
-**Available Variables:**
-- `VITE_API_BASE_URL` - Backend API URL (default: http://localhost:3000/api)
-- `VITE_APP_NAME` - Application name (default: PharmaFlow)
-- `VITE_APP_VERSION` - Application version (default: 1.0.0)
-- `VITE_ENVIRONMENT` - Environment (development/production)
-
-**Environment Files:**
-- `.env` - Default environment variables
-- `.env.production` - Production-specific variables
-- `.env.example` - Template with all available variables
-
-### Backend Environment Variables
-
-**Required Variables:**
-- `MONGODB_URL` - MongoDB connection string
-- `JWT_SECRET` - Secret key for JWT tokens
-- `EMAIL_USER` - Email address for sending notifications
-- `EMAIL_PASS` - Email password/app password
-
-**Optional Variables:**
-- `PORT` - Server port (default: 3000)
-- `FRONTEND_URL` - Frontend URL for CORS (default: http://localhost:5173)
-- `NODE_ENV` - Environment (development/production)
-- `CORS_ORIGIN` - Specific CORS origin
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/signup` - Register new retailer
-- `POST /api/auth/verify-otp` - Verify email with OTP
-- `POST /api/auth/login` - Login retailer
-
-### Products
-- `GET /api/products` - Get all products
-- `POST /api/products` - Create new product
-- `PUT /api/products/:id` - Update product
-- `DELETE /api/products/:id` - Delete product
-- `GET /api/products/low-stock` - Get low stock products
-
-### Sales
-- `POST /api/sales` - Create new sale
-- `GET /api/sales` - Get all sales with pagination
-- `GET /api/sales/:id/receipt` - Generate PDF receipt
-
-### Customers
-- `GET /api/customers` - Get all customers (with search)
-- `POST /api/customers` - Create/update customer
-- `GET /api/customers/:id/orders` - Get customer order history
-
-### Dashboard
-- `GET /api/dashboard/analytics` - Get dashboard analytics
-- `GET /api/dashboard/recent-sales` - Get recent sales
-- `GET /api/dashboard/sales-summary` - Get sales summary
-
 ## Usage
 
 1. **Register**: Create a new account with shop name, email, and password
@@ -216,13 +156,6 @@ PharmaFlow/
 └── README.md
 ```
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
 
 ## License
 

@@ -23,6 +23,8 @@ import AddProduct from './pages/AddProduct';
 import Orders from './pages/Orders';
 import NewSale from './pages/NewSale';
 import Customers from './pages/Customers';
+import RegisterGuest from './components/auth/RegisterGuest';
+import {Navbar} from './components/common/Navbar'
 
 function App() {
   return (
@@ -30,11 +32,13 @@ function App() {
       <GuestSessionHandler />
       <Router>
         <div className="App">
+          {/*<Navbar/>*/}
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+             <Route path="/register-guest" element={ <RegisterGuest/>} />
 
             {/* Logout confirmation - protected route */}
             <Route path="/logout" element={

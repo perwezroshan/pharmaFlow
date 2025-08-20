@@ -1,10 +1,10 @@
 # PharmaFlow – Medicine Retail Shop Management System
 
-PharmaFlow is a full-stack web application for medicine retailers. It provides secure authentication, inventory tracking, order generation, sales processing, customer management, and analytics.
+PharmaFlow is a comprehensive full-stack web application designed specifically for medicine retail shops. It provides secure authentication, real-time inventory tracking, automated order generation, streamlined sales processing with billing, customer relationship management, and detailed business analytics.
 
 ---
 
-## Table of Contents
+## 🚀 Features
 🔐 Authentication: JWT-based login, email verification (OTP), protected routes
 
 📊 Dashboard: Sales/profit summaries, interactive charts, recent activity, time filters (1M/6M/1Y)
@@ -19,7 +19,7 @@ PharmaFlow is a full-stack web application for medicine retailers. It provides s
 
 ---
 
-## Tech Stack
+## ⚡Tech Stack
 
 ### Backend
 
@@ -29,30 +29,9 @@ JWT, Nodemailer, PDFKit, bcryptjs
 
 ### Frontend
 
--React 19 + Vite
--Redux Toolkit, React Router
--Recharts, Axios
--Tailwind CSS
----
+React 19 + Vite
+Redux Toolkit, React Router
+Recharts, Axios
+Tailwind CSS
 
-## Architecture
-
-PharmaFlow/
-├── backend/
-│   ├── controllers/     # API controllers
-│   ├── models/          # Database models
-│   ├── routes/          # API routes
-│   ├── middleware/      # Authentication middleware
-│   ├── services/        # Business logic services
-│   ├── utils/           # Utility functions
-│   └── index.js         # Server entry point
-├── frontend/
-│   ├── src/
-│   │   ├── components/  # React components
-│   │   ├── pages/       # Page components
-│   │   ├── store/       # Redux store and slices
-│   │   ├── services/    # API services
-│   │   └── App.jsx      # Main app component
-│   └── public/          # Static assets
-└── README.md
 
